@@ -1,0 +1,17 @@
+body {
+    background: url('bg.jpg') no-repeat center center fixed;
+    background-size: 100% 100%;
+}
+
+.faceContainer {
+    position: relative;
+}
+
+.slice {
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transition: all 0.5s;
+    margin: -200px 0 0 -200px;
+    transition-timing-function: cubic-bezier(0, 1.4, 1, 1);
+}
