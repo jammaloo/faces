@@ -36,6 +36,9 @@ const moveHandler = (event) => {
                 break;
         }
     });
+    event.stopPropagation();
+    event.preventDefault();
+    return false;
 };
 
 const changeMode = (e) => {
