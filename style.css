@@ -8,10 +8,12 @@ body {
 }
 
 .slice {
+    width: 25vw;
+    height: 25vw;
     position: absolute;
     top: 50vh;
     left: 50vw;
     transition: all 0.5s;
-    margin: -200px 0 0 -200px;
+    margin: -12.5vw 0 0 -12.5vw;
     transition-timing-function: cubic-bezier(0, 1.4, 1, 1);
 }

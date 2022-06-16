@@ -1,6 +1,8 @@
 const imageUrl = 'face.png';
 const sliceCount = 30;
 const startingSize = 400;
+const modes = ['normal', 'fixed'];
+let currentMode = modes[0];
 
 const imageBackgroundColor = '#b5948a';
 
@@ -12,16 +14,36 @@ for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
 }
 
 const moveHandler = (event) => {
-    console.log('event', event);
     const mouseX = event.clientX;
     const mouseY = event.clientY;
-    document.querySelectorAll('.slice').forEach((slice) => {
-        slice.style.top = `${mouseY}px`;
-        slice.style.left = `${mouseX}px`;
+    const centreX = window.innerWidth / 2;
+    const centreY = window.innerHeight / 2;
+    const deltaX = (mouseX - centreX) / window.innerWidth;
+    const deltaY = (mouseY - centreY) / window.innerHeight;
+    const imageSlices = document.querySelectorAll('.slice');
+    imageSlices.forEach((slice, sliceIndex) => {
+        switch (currentMode) {
+            case 'normal':
+                slice.style.top = `${mouseY}px`;
+                slice.style.left = `${mouseX}px`;
+                break;
+            case 'fixed':
+                const sliceOffset = 1 - (sliceIndex * (1 / imageSlices.length)) * 250;
+                const deltaYOffset = deltaY * sliceOffset;
+                const deltaXOffset = deltaX * sliceOffset;
+                slice.style.top = `${centreY - deltaYOffset}px`;
+                slice.style.left = `${centreX - deltaXOffset}px`;
+                break;
+        }
     });
 };
 
-//window.addEventListener('click', moveHandler);
+const changeMode = () => {
+    const currentModeIndex = modes.indexOf(currentMode);
+    currentMode = modes[(currentModeIndex + 1) % modes.length];
+};
+
+window.addEventListener('click', changeMode);
 window.addEventListener('mousemove', moveHandler);
 window.addEventListener('touchmove', moveHandler);
 
