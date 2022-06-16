@@ -1,7 +1,13 @@
 body {
-    background: url('bg.jpg') no-repeat center center fixed;
-    background-size: 100% 100%;
+    background: white;
     touch-action: none;
+    overflow: hidden;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+.drop {
+    background: rgba(0, 255, 0, 0.5);
 }
 
 .faceContainer {

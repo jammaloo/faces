@@ -4,13 +4,13 @@ const startingSize = 400;
 const modes = ['normal', 'fixed'];
 let currentMode = modes[0];
 
-const imageBackgroundColor = '#b5948a';
+function init(sliceCount, startingSize, imageUrl) {
+    const container = document.querySelector('.faceContainer');
+    container.innerHTML = '';
 
-const container = document.querySelector('.faceContainer');
-
-
-for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
-    container.appendChild(createSlice(imageUrl, imageBackgroundColor, startingSize, sliceIndex, sliceCount));
+    for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
+        container.appendChild(createSlice(imageUrl, startingSize, sliceIndex, sliceCount));
+    }
 }
 
 const moveHandler = (event) => {
@@ -64,7 +64,7 @@ window.addEventListener('mousemove', moveHandler);
 window.addEventListener('touchmove', moveHandler);
 
 
-function createSlice(imageUrl, backgroundColor, sliceSize, sliceIndex, sliceTotalCount) {
+function createSlice(imageUrl, sliceSize, sliceIndex, sliceTotalCount) {
     const clipPercentage = 50 - ((50 / sliceCount) * sliceIndex);
     const image = new Image(sliceSize, sliceSize);
     const transitionDuration = (sliceTotalCount - sliceIndex) * 1;
@@ -74,3 +74,22 @@ function createSlice(imageUrl, backgroundColor, sliceSize, sliceIndex, sliceTota
     image.className = 'slice'
     return image;
 }
+
+const dropzone = document.getElementsByTagName('body')[0];
+dropzone.addEventListener("dragover", function(event) {
+    dropzone.className = 'drop';
+    event.preventDefault();
+}, true);
+dropzone.addEventListener("drop", function(event) {
+    event.preventDefault();
+    dropzone.className = '';
+    const droppedFile = event.dataTransfer.files[0];
+    if (!droppedFile.type.match(/image.*/)) {
+        alert('Images only, please!');
+        return;
+    }
+    init(sliceCount, startingSize, URL.createObjectURL(droppedFile));
+}, true);
+
+
+init(sliceCount, startingSize, imageUrl);
