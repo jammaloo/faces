@@ -1,10 +1,9 @@
 const defaultImageUrl = 'face.png';
 const sliceCount = 30;
-const startingSize = 400;
 const modes = ['normal', 'fixed'];
 let currentMode = modes[0];
 
-function init(sliceCount, startingSize, passedImageUrl = null) {
+function init(sliceCount, passedImageUrl = null) {
     const container = document.querySelector('.faceContainer');
     container.innerHTML = '';
     let imageUrl = defaultImageUrl;
@@ -24,7 +23,7 @@ function init(sliceCount, startingSize, passedImageUrl = null) {
     }
 
     for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
-        container.appendChild(createSlice(imageUrl, startingSize, sliceIndex, sliceCount));
+        container.appendChild(createSlice(imageUrl, sliceIndex, sliceCount));
     }
 }
 
@@ -79,9 +78,9 @@ window.addEventListener('mousemove', moveHandler);
 window.addEventListener('touchmove', moveHandler);
 
 
-function createSlice(imageUrl, sliceSize, sliceIndex, sliceTotalCount) {
+function createSlice(imageUrl, sliceIndex, sliceTotalCount) {
     const clipPercentage = 50 - ((50 / sliceCount) * sliceIndex);
-    const image = new Image(sliceSize, sliceSize);
+    const image = new Image();
     const transitionDuration = (sliceTotalCount - sliceIndex) * 1;
     image.src = imageUrl;
     image.style.clipPath = `circle(${clipPercentage}% at center)`;
@@ -103,14 +102,14 @@ dropzone.addEventListener("drop", function(event) {
         alert('Images only, please!');
         return;
     }
-    init(sliceCount, startingSize, URL.createObjectURL(droppedFile));
+    init(sliceCount, URL.createObjectURL(droppedFile));
 }, true);
 
 window.addEventListener('hashchange', () => {
-    init(sliceCount, startingSize);
+    init(sliceCount);
 });
 
-init(sliceCount, startingSize);
+init(sliceCount);
 
 document.getElementById('customize').addEventListener('click', () => {
     document.getElementById('modal').style = 'display: block;'
@@ -131,5 +130,5 @@ document.getElementById('cancel').addEventListener('click', () => {
 });
 
 window.addEventListener('hashchange', event => {
-    init(sliceCount, startingSize, URL.createObjectURL(droppedFile));
+    init(sliceCount, URL.createObjectURL(droppedFile));
 });

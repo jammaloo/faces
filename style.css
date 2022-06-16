@@ -16,7 +16,7 @@ body {
 
 .slice {
     width: 25vw;
-    height: 25vw;
+    height: auto;
     position: absolute;
     top: 50vh;
     left: 50vw;
