@@ -1,4 +1,4 @@
-const imageUrl = 'face.png';
+const defaultImageUrl = 'face.png';
 const sliceCount = 30;
 const startingSize = 400;
 const modes = ['normal', 'fixed'];
@@ -91,5 +91,17 @@ dropzone.addEventListener("drop", function(event) {
     init(sliceCount, startingSize, URL.createObjectURL(droppedFile));
 }, true);
 
+let initialImageUrl = defaultImageUrl;
 
-init(sliceCount, startingSize, imageUrl);
+const uri = new URL(window.location.href);
+if (uri.hash) {
+    const uriParts = uri.hash.split('#');
+    try {
+        new URL(uriParts[1]);
+        initialImageUrl = uriParts[1];
+    } catch(e) {
+        alert('Invalid URL provided');
+    }
+}
+
+init(sliceCount, startingSize, initialImageUrl);
