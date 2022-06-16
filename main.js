@@ -4,9 +4,24 @@ const startingSize = 400;
 const modes = ['normal', 'fixed'];
 let currentMode = modes[0];
 
-function init(sliceCount, startingSize, imageUrl) {
+function init(sliceCount, startingSize, passedImageUrl = null) {
     const container = document.querySelector('.faceContainer');
     container.innerHTML = '';
+    let imageUrl = defaultImageUrl;
+    if (passedImageUrl) {
+        imageUrl = passedImageUrl;
+    } else {
+        const uri = new URL(window.location.href);
+        if (uri.hash) {
+            try {
+                const urlData = JSON.parse(decodeURIComponent(uri.hash.substring(1)));
+                new URL(urlData.imageUrl);
+                imageUrl = urlData.imageUrl;
+            } catch (e) {
+                alert('Invalid URL provided');
+            }
+        }
+    }
 
     for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
         container.appendChild(createSlice(imageUrl, startingSize, sliceIndex, sliceCount));
@@ -91,17 +106,30 @@ dropzone.addEventListener("drop", function(event) {
     init(sliceCount, startingSize, URL.createObjectURL(droppedFile));
 }, true);
 
-let initialImageUrl = defaultImageUrl;
+window.addEventListener('hashchange', () => {
+    init(sliceCount, startingSize);
+});
 
-const uri = new URL(window.location.href);
-if (uri.hash) {
-    const uriParts = uri.hash.split('#');
-    try {
-        new URL(uriParts[1]);
-        initialImageUrl = uriParts[1];
-    } catch(e) {
-        alert('Invalid URL provided');
-    }
-}
+init(sliceCount, startingSize);
 
-init(sliceCount, startingSize, initialImageUrl);
+document.getElementById('customize').addEventListener('click', () => {
+    document.getElementById('modal').style = 'display: block;'
+});
+
+document.getElementById('save').addEventListener('click', () => {
+    const newUrl = document.getElementById('url').value;
+    const urlData = JSON.stringify({
+        imageUrl: newUrl,
+    });
+    window.location.hash = `#${urlData}`;
+
+    document.getElementById('modal').style = 'display: none;'
+});
+
+document.getElementById('cancel').addEventListener('click', () => {
+    document.getElementById('modal').style = 'display: none;';
+});
+
+window.addEventListener('hashchange', event => {
+    init(sliceCount, startingSize, URL.createObjectURL(droppedFile));
+});
