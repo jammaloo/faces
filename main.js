@@ -59,6 +59,7 @@ const changeMode = (e) => {
 };
 
 window.addEventListener('click', changeMode);
+window.addEventListener('touchstart', changeMode);
 window.addEventListener('mousemove', moveHandler);
 window.addEventListener('touchmove', moveHandler);
 
