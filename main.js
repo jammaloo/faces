@@ -14,8 +14,8 @@ for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
 }
 
 const moveHandler = (event) => {
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
+    const mouseX = event.touches ? event.touches[0].screenX : event.clientX;
+    const mouseY = event.touches ? event.touches[0].screenY : event.clientY;
     const centreX = window.innerWidth / 2;
     const centreY = window.innerHeight / 2;
     const deltaX = (mouseX - centreX) / window.innerWidth;
