@@ -45,9 +45,10 @@ const moveHandler = (event) => {
     }, 10);
 };
 
-const changeMode = () => {
+const changeMode = (e) => {
     const currentModeIndex = modes.indexOf(currentMode);
     currentMode = modes[(currentModeIndex + 1) % modes.length];
+    moveHandler(e);
 };
 
 window.addEventListener('click', changeMode);
