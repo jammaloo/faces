@@ -33,7 +33,7 @@ const moveHandler = (event) => {
                     slice.style.left = `${mouseX}px`;
                     break;
                 case 'fixed':
-                    const sliceOffset = 1 - (sliceIndex * (1 / imageSlices.length)) * 250;
+                    const sliceOffset = 1 - (sliceIndex * (1 / imageSlices.length)) * (window.innerWidth * 0.75);
                     const deltaYOffset = deltaY * sliceOffset;
                     const deltaXOffset = deltaX * sliceOffset;
                     slice.style.top = `${centreY - deltaYOffset}px`;
@@ -48,6 +48,20 @@ const moveHandler = (event) => {
 const changeMode = (e) => {
     const currentModeIndex = modes.indexOf(currentMode);
     currentMode = modes[(currentModeIndex + 1) % modes.length];
+    let className = 'slice';
+    switch (currentMode) {
+        case 'normal':
+            className = 'slice';
+            break;
+        case 'fixed':
+            className = 'slice large';
+            break;
+    }
+    const imageSlices = document.querySelectorAll('.slice');
+    imageSlices.forEach((slice) => {
+        slice.className = className;
+    });
+
     moveHandler(e);
 };
 
