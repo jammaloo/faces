@@ -128,7 +128,3 @@ document.getElementById('save').addEventListener('click', () => {
 document.getElementById('cancel').addEventListener('click', () => {
     document.getElementById('modal').style = 'display: none;';
 });
-
-window.addEventListener('hashchange', event => {
-    init(sliceCount, URL.createObjectURL(droppedFile));
-});
