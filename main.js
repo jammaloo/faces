@@ -1,5 +1,5 @@
 const imageUrl = 'face.png';
-const sliceCount = 20;
+const sliceCount = 30;
 const startingSize = 400;
 
 const imageBackgroundColor = '#b5948a';
@@ -29,7 +29,7 @@ window.addEventListener('touchmove', moveHandler);
 function createSlice(imageUrl, backgroundColor, sliceSize, sliceIndex, sliceTotalCount) {
     const clipPercentage = 50 - ((50 / sliceCount) * sliceIndex);
     const image = new Image(sliceSize, sliceSize);
-    const transitionDuration = (sliceTotalCount - sliceIndex) * 0.1;
+    const transitionDuration = (sliceTotalCount - sliceIndex) * 1;
     image.src = imageUrl;
     image.style.clipPath = `circle(${clipPercentage}% at center)`;
     image.style.transitionDuration = `${transitionDuration}s`;
