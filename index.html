@@ -9,7 +9,14 @@
 <a id="customize" href="#">Customize</a>
 <div class="faceContainer"></div>
 <div id="modal" style="display: none;">
-    <input id="url" type="url" placeholder="Image Url" />
+    <label>
+        Image URL
+        <input id="url" type="url" placeholder="Image Url" />
+    </label>
+    <label>
+        Number of image layers (More layers is smoother, but slower)
+        <input id="slicecount" type="number" value="30" />
+    </label>
     <input id="save" type="button" value="Save" />
     <input id="cancel" type="button" value="Cancel" />
 </div>

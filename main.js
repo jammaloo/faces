@@ -1,12 +1,12 @@
 const defaultImageUrl = 'face.png';
-const sliceCount = 30;
 const modes = ['normal', 'fixed'];
 let currentMode = modes[0];
 
-function init(sliceCount, passedImageUrl = null) {
+function init(passedImageUrl = null) {
     const container = document.querySelector('.faceContainer');
     container.innerHTML = '';
     let imageUrl = defaultImageUrl;
+    let sliceCount = 30;
     if (passedImageUrl) {
         imageUrl = passedImageUrl;
     } else {
@@ -16,6 +16,10 @@ function init(sliceCount, passedImageUrl = null) {
                 const urlData = JSON.parse(decodeURIComponent(uri.hash.substring(1)));
                 new URL(urlData.imageUrl);
                 imageUrl = urlData.imageUrl;
+                const parsedSliceCount = parseInt(urlData.sliceCount, 10);
+                if (!isNaN(parsedSliceCount)) {
+                    sliceCount = parsedSliceCount;
+                }
             } catch (e) {
                 alert('Invalid URL provided');
             }
@@ -23,7 +27,7 @@ function init(sliceCount, passedImageUrl = null) {
     }
 
     for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
-        container.appendChild(createSlice(imageUrl, sliceIndex, sliceCount));
+        container.appendChild(createSlice(imageUrl, sliceCount, sliceIndex, sliceCount));
     }
 }
 
@@ -78,7 +82,7 @@ window.addEventListener('mousemove', moveHandler);
 window.addEventListener('touchmove', moveHandler);
 
 
-function createSlice(imageUrl, sliceIndex, sliceTotalCount) {
+function createSlice(imageUrl, sliceCount, sliceIndex, sliceTotalCount) {
     const clipPercentage = 50 - ((50 / sliceCount) * sliceIndex);
     const image = new Image();
     const transitionDuration = (sliceTotalCount - sliceIndex) * 1;
@@ -102,14 +106,14 @@ dropzone.addEventListener("drop", function(event) {
         alert('Images only, please!');
         return;
     }
-    init(sliceCount, URL.createObjectURL(droppedFile));
+    init(URL.createObjectURL(droppedFile));
 }, true);
 
 window.addEventListener('hashchange', () => {
-    init(sliceCount);
+    init();
 });
 
-init(sliceCount);
+init();
 
 document.getElementById('customize').addEventListener('click', () => {
     document.getElementById('modal').style = 'display: block;'
@@ -117,8 +121,10 @@ document.getElementById('customize').addEventListener('click', () => {
 
 document.getElementById('save').addEventListener('click', () => {
     const newUrl = document.getElementById('url').value;
+    const sliceCount = parseInt(document.getElementById('url').value, 10) || 30;
     const urlData = JSON.stringify({
         imageUrl: newUrl,
+        sliceCount: sliceCount,
     });
     window.location.hash = `#${urlData}`;
 
