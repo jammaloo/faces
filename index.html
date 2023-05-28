@@ -12,7 +12,13 @@
     <label>
         Image URL
         <input id="url" type="url" placeholder="Image Url" />
+        <input id="load" type="button" value="Load" />
     </label>
+    <p id="preview_text" style="display: none;">Click the image to select the focus point</p>
+    <div id="preview_container" style="display: none;">
+        <img id="preview" src="" />
+        <div id="preview_cursor"></div>
+    </div>
     <label>
         Number of image layers (More layers is smoother, but slower)
         <input id="slicecount" type="number" value="30" />

@@ -40,3 +40,20 @@ body {
     height: 100vh;
     background-color: white;
 }
+
+label {
+    display: block;
+}
+
+#preview_container {
+    position: relative;
+    padding: 0;
+    margin: 0 0 0 200px;
+}
+
+#preview_cursor {
+    width: 6px;
+    height: 6px;
+    background-color: red;
+    position: absolute;
+}

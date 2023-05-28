@@ -1,6 +1,9 @@
 const defaultImageUrl = 'face.png';
 const modes = ['normal', 'fixed'];
 let currentMode = modes[0];
+const crosshairSize = 6;
+let previewOffset = [0, 0];
+let imageCenterOffset = [0, 0];
 
 function init(passedImageUrl = null) {
     const container = document.querySelector('.faceContainer');
@@ -20,6 +23,7 @@ function init(passedImageUrl = null) {
                 if (!isNaN(parsedSliceCount)) {
                     sliceCount = parsedSliceCount;
                 }
+                imageCenterOffset = [parseInt(urlData.previewOffset?.[0], 10) || 0, parseInt(urlData.previewOffset?.[1], 10) || 0];
             } catch (e) {
                 alert('Invalid URL provided');
             }
@@ -27,7 +31,7 @@ function init(passedImageUrl = null) {
     }
 
     for (let sliceIndex = 0; sliceIndex < sliceCount; sliceIndex++) {
-        container.appendChild(createSlice(imageUrl, sliceCount, sliceIndex, sliceCount));
+        container.appendChild(createSlice(imageUrl, sliceCount, sliceIndex, sliceCount, previewOffset));
     }
 }
 
@@ -87,9 +91,9 @@ function createSlice(imageUrl, sliceCount, sliceIndex, sliceTotalCount) {
     const image = new Image();
     const transitionDuration = (sliceTotalCount - sliceIndex) * 1;
     image.src = imageUrl;
-    image.style.clipPath = `circle(${clipPercentage}% at center)`;
+    image.style.clipPath = `circle(${clipPercentage}% at ${50 - imageCenterOffset[0]}% ${50 - imageCenterOffset[1]}%)`;
     image.style.transitionDuration = `${transitionDuration}s`;
-    image.className = 'slice'
+    image.className = 'slice';
     return image;
 }
 
@@ -125,6 +129,7 @@ document.getElementById('save').addEventListener('click', () => {
     const urlData = JSON.stringify({
         imageUrl: newUrl,
         sliceCount: sliceCount,
+        previewOffset
     });
     window.location.hash = `#${urlData}`;
 
@@ -133,4 +138,23 @@ document.getElementById('save').addEventListener('click', () => {
 
 document.getElementById('cancel').addEventListener('click', () => {
     document.getElementById('modal').style = 'display: none;';
+});
+
+document.getElementById('load').addEventListener('click', () => {
+    document.getElementById('preview').src = document.getElementById('url').value;
+    document.getElementById('preview_container').style = 'display: block;';
+    document.getElementById('preview_text').style = 'display: block;';
+});
+
+document.getElementById('preview').addEventListener('load', () => {
+    const { width, height } = document.getElementById('preview');
+    document.getElementById('preview_cursor').style = `top: ${ Math.round(height/2) - crosshairSize / 2}px; left: ${Math.round(width / 2) - crosshairSize / 2}px;`;
+
+});
+
+document.getElementById('preview').addEventListener('click', (e) => {
+    const { width, height } = document.getElementById('preview');
+    previewOffset[0] = 50 - Math.round((e.offsetX / width) * 100);
+    previewOffset[1] = 50 - Math.round((e.offsetY / height) * 100);
+    document.getElementById('preview_cursor').style = `top: ${e.offsetY - crosshairSize / 2}px; left: ${e.offsetX - crosshairSize / 2}px;`;
 });
