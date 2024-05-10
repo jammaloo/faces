@@ -5,6 +5,8 @@ const crosshairSize = 6;
 let previewOffset = [0, 0];
 let imageCenterOffset = [0, 0];
 
+const rootElement = document.querySelector(':root');
+
 function init(passedImageUrl = null) {
     const container = document.querySelector('.faceContainer');
     container.innerHTML = '';
@@ -35,6 +37,18 @@ function init(passedImageUrl = null) {
     }
 }
 
+let nextUpdate = null;
+
+const updateHandler = window.setInterval(() => {
+    if (!nextUpdate) {
+        return;
+    }
+    window.requestAnimationFrame(() => {
+        nextUpdate();
+        nextUpdate = null;
+    });
+}, 1);
+
 const moveHandler = (event) => {
     const mouseX = event.touches ? event.touches[0].screenX : event.clientX;
     const mouseY = event.touches ? event.touches[0].screenY : event.clientY;
@@ -42,22 +56,23 @@ const moveHandler = (event) => {
     const centreY = window.innerHeight / 2;
     const deltaX = (mouseX - centreX) / window.innerWidth;
     const deltaY = (mouseY - centreY) / window.innerHeight;
-    const imageSlices = document.querySelectorAll('.slice');
-    imageSlices.forEach((slice, sliceIndex) => {
-        switch (currentMode) {
-            case 'normal':
-                slice.style.top = `${mouseY}px`;
-                slice.style.left = `${mouseX}px`;
-                break;
-            case 'fixed':
-                const sliceOffset = 1 - (sliceIndex * (1 / imageSlices.length)) * (window.innerWidth * 0.75);
-                const deltaYOffset = deltaY * sliceOffset;
-                const deltaXOffset = deltaX * sliceOffset;
-                slice.style.top = `${centreY - deltaYOffset}px`;
-                slice.style.left = `${centreX - deltaXOffset}px`;
-                break;
+    if (currentMode === 'normal') {
+        nextUpdate = () => {
+            rootElement.style.setProperty('--mouse-y', `${mouseY}px`);
+            rootElement.style.setProperty('--mouse-x', `${mouseX}px`);
         }
-    });
+        return;
+    }
+    nextUpdate = () => {
+        const imageSlices = document.querySelectorAll('.slice');
+        imageSlices.forEach((slice, sliceIndex) => {
+            const sliceOffset = 1 - (sliceIndex * (1 / imageSlices.length)) * (window.innerWidth * 0.75);
+            const deltaYOffset = deltaY * sliceOffset;
+            const deltaXOffset = deltaX * sliceOffset;
+            slice.style.top = `${centreY - deltaYOffset}px`;
+            slice.style.left = `${centreX - deltaXOffset}px`;
+        });
+    }
 };
 
 const changeMode = (e) => {
@@ -66,7 +81,7 @@ const changeMode = (e) => {
     let className = 'slice';
     switch (currentMode) {
         case 'normal':
-            className = 'slice';
+            className = 'slice small';
             break;
         case 'fixed':
             className = 'slice large';
@@ -93,7 +108,7 @@ function createSlice(imageUrl, sliceCount, sliceIndex, sliceTotalCount) {
     image.src = imageUrl;
     image.style.clipPath = `circle(${clipPercentage}% at ${50 - imageCenterOffset[0]}% ${50 - imageCenterOffset[1]}%)`;
     image.style.transitionDuration = `${transitionDuration}s`;
-    image.className = 'slice';
+    image.className = 'slice small';
     return image;
 }
 
